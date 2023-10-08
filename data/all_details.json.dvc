@@ -1,0 +1,5 @@
+outs:
+- md5: 19aee06ef069aa9c2b31551c6c1b3e07
+  size: 5456358
+  hash: md5
+  path: all_details.json
