@@ -1,0 +1,5 @@
+outs:
+- md5: 4f1cb5bc995df87078e71301d1762d4a
+  size: 8529
+  hash: md5
+  path: editors.csv
