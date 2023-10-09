@@ -1,0 +1,5 @@
+outs:
+- md5: be47edcf12fd7f1e83babfb76d2c5687
+  size: 52283
+  hash: md5
+  path: academic_plans.csv
