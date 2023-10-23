@@ -3,7 +3,7 @@ from .utils import check_if_file_exists
 
 
 class DataExtractor:
-    def __init__(self, data: dict, full_info=False):
+    def __init__(self, data: dict):
         self.data = data
         self.dfs = {
             "academic_plans": self.extract_academic_plans(),
@@ -11,18 +11,15 @@ class DataExtractor:
             "structural_units": self.extract_structural_units(),
             "fields_of_study": self.extract_fields_of_study(),
             "editors": self.extract_editors(),
+            "blocks": self.extract_blocks(),
+            "modules": self.extract_modules(),
+            "change_blocks_of_work_programs_in_modules": self.extract_change_blocks_of_work_programs_in_modules(),
+            "work_programs": self.extract_work_programs(),
+            "gia": self.extract_gia(),
+            "practice": self.extract_practice(),
+            "zuns_for_wp": self.extract_zuns_for_wp(),
+            "zuns_in_wp": self.extract_zuns_in_wp(),
         }
-        if full_info:
-            self.dfs["blocks"] = self.extract_blocks()
-            self.dfs["modules"] = self.extract_modules()
-            self.dfs[
-                "change_blocks_of_work_programs_in_modules"
-            ] = self.extract_change_blocks_of_work_programs_in_modules()
-            self.dfs["work_programs"] = self.extract_work_programs()
-            self.dfs["gia"] = self.extract_gia()
-            self.dfs["practice"] = self.extract_practice()
-            self.dfs["zuns_for_wp"] = self.extract_zuns_for_wp()
-            self.dfs["zuns_in_wp"] = self.extract_zuns_in_wp()
 
     def get_from_files(self, folder: str):
         for df_name in self.dfs:
@@ -195,7 +192,7 @@ class DataExtractor:
 
         return df
 
-    def extract_modules(self, drop_extra=True):
+    def extract_modules(self, clear_extra=True, drop_extra=True):
         df_blocks = self.extract_blocks(False, False)
         df = df_blocks[["modules_in_discipline_block"]]
         explode_columns = ["modules_in_discipline_block"]
@@ -213,9 +210,14 @@ class DataExtractor:
             df_parents = df_children
             dfs.append(df_parents)
         df = pd.concat(dfs)
-        df = self.clear_df(df)
-        df = self.unique_df_by_id(df)
-        df = self.assign_entity_id(df, ids_columns, drop=drop_extra)
+
+        df = self.prepare_df(
+            df,
+            ids_columns=ids_columns,
+            clear_extra=clear_extra,
+            drop_extra=drop_extra,
+        )
+
         return df
 
     def extract_change_blocks_of_work_programs_in_modules(
@@ -223,10 +225,8 @@ class DataExtractor:
     ):
         df_modules = self.extract_modules(False, False)
         df = df_modules[["change_blocks_of_work_programs_in_modules"]]
-
         explode_columns = ["change_blocks_of_work_programs_in_modules"]
         ids_columns = ["practice", "gia", "work_program"]
-
         df = self.prepare_df(
             df,
             explode_columns=explode_columns,
@@ -235,7 +235,6 @@ class DataExtractor:
             clear_extra=clear_extra,
             drop_extra=drop_extra,
         )
-
         return df
 
     def extract_work_programs(self, clear_extra=True, drop_extra=True):
@@ -307,7 +306,6 @@ class DataExtractor:
         )
         return df
 
-    # TO-DO: redo???
     def commit_to_dvc(self, commiter, names=None):
         if names is None:
             names = self.dfs.keys()
