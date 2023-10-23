@@ -50,10 +50,12 @@ class SCD:
     @staticmethod
     def update_status(
         df: pd.DataFrame,
-        deleted_ids: List[int] = [],
+        deleted_ids: List[int] = None,
         id_col: str = "id",
         status_col: str = "status",
     ) -> pd.DataFrame:
+        if deleted_ids is None:
+            deleted_ids = []
         df[status_col] = False
         df[status_col] = df.groupby(id_col).cumcount(ascending=False) == 0
         df.loc[df[id_col].isin(deleted_ids), status_col] = False
