@@ -84,6 +84,7 @@ class DataExtractor:
         if ids_columns is None:
             ids_columns = []
 
+        df = self.unique_df_by_id(df)
         df = self.explode_df(df, explode_columns)
         if norm_col:
             df = pd.json_normalize(df[norm_col])
@@ -157,7 +158,7 @@ class DataExtractor:
 
         return df
 
-    def extract_editors(self, clear_extra=False, drop_extra=False):
+    def extract_editors(self, clear_extra=True, drop_extra=True):
         df_academic_plan_in_field_of_study = (
             self.extract_academic_plans_in_field_of_study(False, False)
         )
