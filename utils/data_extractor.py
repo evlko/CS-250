@@ -84,12 +84,12 @@ class DataExtractor:
         if ids_columns is None:
             ids_columns = []
 
-        df = self.unique_df_by_id(df)
         df = self.explode_df(df, explode_columns)
         if norm_col:
             df = pd.json_normalize(df[norm_col])
         if clear_extra:
             df = self.clear_df(df, unused_columns)
+        df = self.unique_df_by_id(df)
         df = self.assign_entity_id(df, ids_columns, drop=drop_extra)
         return df
 
