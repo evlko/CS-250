@@ -1,3 +1,7 @@
 *.idea/
 *.csv
 *.json
+cache
+tmp
+config.local
+*.csv

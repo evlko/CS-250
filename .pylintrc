@@ -1,0 +1,23 @@
+[MAIN]
+ignore=
+    dvc-local-config.json,
+    *.csv,
+    *.ipynb,
+    venv,
+    README.md,
+    requirements.txt,
+    Makefile,
+
+max-line-length=120
+
+[MASTER]
+disable=
+    C0103,
+    C0114,
+    C0115,
+    C0116,
+    R0903,
+    C0200,
+    E1101,
+    W0104,
+    C0301
