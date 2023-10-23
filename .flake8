@@ -1,0 +1,20 @@
+[flake8]
+ignore = E402, W503, E203
+count = True
+show-source = True
+statistics = True
+exclude =
+    .git,
+    .black,
+    .pylintrc,
+    requirements.txt
+    __pycache__,
+    .pytest_cache,
+    .mypy_cache,
+    venv,
+    .ipynb,
+    sandbox.py
+    *.csv
+filename =
+    *.py
+max-line-length = 120
