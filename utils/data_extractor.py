@@ -306,15 +306,3 @@ class DataExtractor:
             drop_extra=drop_extra,
         )
         return df
-
-    def commit_to_dvc(self, commiter, names=None):
-        if names is None:
-            names = self.dfs.keys()
-        for name in names:
-            commiter.commit_pandas(self.dfs[name], name)
-
-    def create_local_copies(self, names=None):
-        if names is None:
-            names = self.dfs.keys()
-        for name in names:
-            self.dfs[name].custom.to_csv_with_time(name)
