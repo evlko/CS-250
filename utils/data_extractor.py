@@ -3,29 +3,45 @@ from .utils import check_if_file_exists
 
 
 class DataExtractor:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict, update=False):
         self.data = data
         self.dfs = {
-            "academic_plans": self.extract_academic_plans(),
-            "academic_plans_in_field_of_study": self.extract_academic_plans_in_field_of_study(),
-            "structural_units": self.extract_structural_units(),
-            "fields_of_study": self.extract_fields_of_study(),
-            "editors": self.extract_editors(),
-            "blocks": self.extract_blocks(),
-            "modules": self.extract_modules(),
-            "change_blocks_of_work_programs_in_modules": self.extract_change_blocks_of_work_programs_in_modules(),
-            "work_programs": self.extract_work_programs(),
-            "gia": self.extract_gia(),
-            "practice": self.extract_practice(),
-            "zuns_for_wp": self.extract_zuns_for_wp(),
-            "zuns_in_wp": self.extract_zuns_in_wp(),
+            "academic_plans": None,
+            "academic_plans_in_field_of_study": None,
+            "structural_units": None,
+            "fields_of_study": None,
+            "editors": None,
+            "blocks": None,
+            "modules": None,
+            "change_blocks_of_work_programs_in_modules": None,
+            "work_programs": None,
+            "gia": None,
+            "practice": None,
+            "zuns_for_wp": None,
+            "zuns_in_wp": None,
         }
+        if update:
+            self.dfs = {
+                "academic_plans": self.extract_academic_plans(),
+                "academic_plans_in_field_of_study": self.extract_academic_plans_in_field_of_study(),
+                "structural_units": self.extract_structural_units(),
+                "fields_of_study": self.extract_fields_of_study(),
+                "editors": self.extract_editors(),
+                "blocks": self.extract_blocks(),
+                "modules": self.extract_modules(),
+                "change_blocks_of_work_programs_in_modules": self.extract_change_blocks_of_work_programs_in_modules(),
+                "work_programs": self.extract_work_programs(),
+                "gia": self.extract_gia(),
+                "practice": self.extract_practice(),
+                "zuns_for_wp": self.extract_zuns_for_wp(),
+                "zuns_in_wp": self.extract_zuns_in_wp(),
+            }
 
     def get_from_files(self, folder: str):
         for df_name in self.dfs:
             try:
                 check_if_file_exists(f"{folder}/{df_name}.csv")
-                self.dfs[df_name] = pd.read_csv(f"{df_name}.csv")
+                self.dfs[df_name] = pd.read_csv(f"{folder}/{df_name}.csv")
             except FileNotFoundError as err:
                 print(err)
 
