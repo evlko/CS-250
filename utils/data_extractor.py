@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from .utils import check_if_file_exists
 
 
@@ -42,6 +43,7 @@ class DataExtractor:
             try:
                 check_if_file_exists(f"{folder}/{df_name}.csv")
                 self.dfs[df_name] = pd.read_csv(f"{folder}/{df_name}.csv")
+                self.dfs[df_name] = self.dfs[df_name].replace(to_replace=['None'], value=np.nan)
             except FileNotFoundError as err:
                 print(err)
 
