@@ -73,6 +73,10 @@ class SCD:
         deleted_ids = set(self._obj[id_col].tolist()) - set(df[id_col].tolist())
 
         check_columns = list(set(self._obj.columns) - {time_col, status_col})
+
+        self._obj = self._obj.astype(str)
+        df = df.astype(str)
+
         df = (
             pd.concat([self._obj, df])
             .drop_duplicates(subset=check_columns)
