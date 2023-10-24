@@ -1,0 +1,5 @@
+outs:
+- md5: 61c1bfbcac693778302c6a53476c590f
+  size: 6175880
+  hash: md5
+  path: change_blocks_of_work_programs_in_modules.csv

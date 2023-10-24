@@ -1,0 +1,5 @@
+outs:
+- md5: 06c0973f251f0fe4182aa8ac3580a480
+  size: 563374
+  hash: md5
+  path: zuns_for_wp.csv

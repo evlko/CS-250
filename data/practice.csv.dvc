@@ -1,0 +1,5 @@
+outs:
+- md5: 2e820f8fd31a93e66581a3fdc7ed78ee
+  size: 2237638
+  hash: md5
+  path: practice.csv

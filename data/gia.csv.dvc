@@ -1,0 +1,5 @@
+outs:
+- md5: 74ad57d4197a0652f7aafb0e31bb59f0
+  size: 186905
+  hash: md5
+  path: gia.csv
