@@ -26,6 +26,15 @@ class CustomAccessor:
         self._obj.to_csv(f"{name}_{daystr}.csv", index=False)
 
 
+@pd.api.extensions.register_dataframe_accessor("dvc")
+class DVCAccessor:
+    def __init__(self, pandas_obj):
+        self._obj = pandas_obj
+
+    def commit_to_dvc(self, commiter, name):
+        commiter.commit_pandas(self._obj, name)
+
+
 def copy_dicts_to_local_scope(func):
     def wrapper(*args, **kwargs):
         args = [arg if isinstance(arg, dict) else arg.copy() for arg in args]
