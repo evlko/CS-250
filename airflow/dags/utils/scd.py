@@ -11,7 +11,7 @@ class SCD:
     @staticmethod
     def get_date_str(day: datetime.date) -> str:
         day = date.today() if day is None else day
-        return day.strftime("%Y-%m-%d %H:%M:%S")
+        return day.strftime("%d_%m_%Y")
 
     def add_effective_date(
             self,
@@ -48,7 +48,7 @@ class SCD:
     @staticmethod
     def update_status(
             df: pd.DataFrame,
-            deleted_ids: List[int] = None,
+            deleted_ids: List[str] = None,
             id_col: str = "id",
             status_col: str = "status",
     ) -> pd.DataFrame:
@@ -68,12 +68,12 @@ class SCD:
             status_col: str = "status",
             inplace: bool = False,
     ) -> Optional[pd.DataFrame]:
-        deleted_ids = set(self._obj[id_col].tolist()) - set(df[id_col].tolist())
-
-        check_columns = list(set(self._obj.columns) - {time_col, status_col})
-
         self._obj = self._obj.astype(str)
         df = df.astype(str)
+
+        deleted_ids = list(set(self._obj[id_col].tolist()) - set(df[id_col].tolist()))
+
+        check_columns = list(set(self._obj.columns) - {time_col, status_col})
 
         df = (
             pd.concat([self._obj, df])
@@ -82,8 +82,8 @@ class SCD:
         )
 
         df = self.update_effective_date(df)
-        df = df.sort_values(by=[id_col, time_col])
-        df = self.update_status(df, deleted_ids=list(deleted_ids))
+        df = df.sort_values(by=[id_col, time_col]).reset_index(drop=True)
+        df = self.update_status(df, deleted_ids)
 
         if not inplace:
             return df

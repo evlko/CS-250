@@ -7,18 +7,14 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.operators.python_operator import PythonOperator
 from airflow.models import Variable
 
-url = "https://op.itmo.ru/auth/token/login"
-username = Variable.get("username")
-password = Variable.get("password")
-auth_data = {"username": username, "password": password}
+from utils.api import API
 
-token_txt = requests.post(url, auth_data).text
-token = json.loads(token_txt)["auth_token"]
-headers = {"Content-Type": "application/json", "Authorization": "Token " + token}
+api = API()
+hook = PostgresHook(postgres_conn_id="PG_WAREHOUSE_CONNECTION")
 
 
 def get_markup():
-    ids = PostgresHook(postgres_conn_id="PG_WAREHOUSE_CONNECTION").get_records(
+    ids = hook.get_records(
         """
     select distinct discipline_code from dds.wp_markup wm 
     left join dds.wp_up wu 
@@ -31,34 +27,7 @@ def get_markup():
     order by discipline_code desc
     """
     )
-    # ids = PostgresHook(postgres_conn_id='PG_WAREHOUSE_CONNECTION').get_records(
-    # """
-    # select distinct discipline_code from dds.wp_markup wm
-    # left join dds.wp_up wu
-    # on wu.wp_id = wm.id
-    # where (prerequisites = '[]' or outcomes = '[]')
-    # and  wu.up_id in
-    # (select id from dds.up u where u.selection_year = '2022')
-    # and wm.id not in
-    # (select wp_id from dds.wp where wp_status = 4)
-    # order by discipline_code desc
-    # """)
-    # ids = PostgresHook(postgres_conn_id='PG_WAREHOUSE_CONNECTION').get_records(
-    # """
-    # with t as (select
-    #     json_array_elements(wp_in_academic_plan::json)->>'discipline_code' as discipline_code
-    # from stg.work_programs wp)
-    # select distinct discipline_code from t
-    # where discipline_code > (select max(discipline_code)::text from stg.wp_markup)
-    # order by 1
-    # """)
-    # ids = PostgresHook(postgres_conn_id='PG_WAREHOUSE_CONNECTION').get_records(
-    # """
-    # with t as (
-    # select distinct (dby.work_programs::json)->>'discipline_code' as discipline_code from stg.disc_by_year dby
-    # order by 1)
-    # select * from t
-    # """)
+
     url_down = "https://op.itmo.ru/api/workprogram/items_isu/"
     for wp_id in ids:
         wp_id = str(wp_id[0])

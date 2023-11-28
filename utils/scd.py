@@ -50,7 +50,7 @@ class SCD:
     @staticmethod
     def update_status(
         df: pd.DataFrame,
-        deleted_ids: List[int] = None,
+        deleted_ids: List[str] = None,
         id_col: str = "id",
         status_col: str = "status",
     ) -> pd.DataFrame:
@@ -70,7 +70,7 @@ class SCD:
         status_col: str = "status",
         inplace: bool = False,
     ) -> Optional[pd.DataFrame]:
-        deleted_ids = set(self._obj[id_col].tolist()) - set(df[id_col].tolist())
+        deleted_ids = list(map(str, list(set(self._obj[id_col].tolist()) - set(df[id_col].tolist()))))
 
         check_columns = list(set(self._obj.columns) - {time_col, status_col})
 
@@ -84,8 +84,8 @@ class SCD:
         )
 
         df = self.update_effective_date(df)
-        df = df.sort_values(by=[id_col, time_col])
-        df = self.update_status(df, deleted_ids=list(deleted_ids))
+        df = df.sort_values(by=[id_col, time_col]).reset_index(drop=True)
+        df = self.update_status(df, deleted_ids)
 
         if not inplace:
             return df
