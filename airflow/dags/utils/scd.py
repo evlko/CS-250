@@ -14,12 +14,11 @@ class SCD:
         return day.strftime("%d_%m_%Y")
 
     def add_effective_date(
-        self,
-        current_date: datetime.date,
-        time_col: str = "effective_date",
-        inplace: bool = False,
+            self,
+            time_col: str = "effective_date",
+            inplace: bool = False,
     ) -> Optional[pd.DataFrame]:
-        current_date = self.get_date_str(current_date)
+        current_date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         if not inplace:
             df_copy = self._obj.copy()
             df_copy[time_col] = current_date
@@ -28,18 +27,17 @@ class SCD:
 
     @classmethod
     def update_effective_date(
-        cls,
-        df: pd.DataFrame,
-        current_date: datetime.date = None,
-        time_col: str = "effective_date",
+            cls,
+            df: pd.DataFrame,
+            time_col: str = "effective_date",
     ) -> pd.DataFrame:
-        current_date = cls.get_date_str(current_date)
+        current_date = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         df[time_col] = df[time_col].fillna(current_date)
 
         return df
 
     def add_status(
-        self, status_col: str = "status", inplace: bool = False
+            self, status_col: str = "status", inplace: bool = False
     ) -> Optional[pd.DataFrame]:
         if not inplace:
             df_copy = self._obj.copy()
@@ -49,10 +47,10 @@ class SCD:
 
     @staticmethod
     def update_status(
-        df: pd.DataFrame,
-        deleted_ids: List[str] = None,
-        id_col: str = "id",
-        status_col: str = "status",
+            df: pd.DataFrame,
+            deleted_ids: List[str] = None,
+            id_col: str = "id",
+            status_col: str = "status",
     ) -> pd.DataFrame:
         if deleted_ids is None:
             deleted_ids = []
@@ -63,19 +61,19 @@ class SCD:
         return df
 
     def update(
-        self,
-        df: pd.DataFrame,
-        id_col: str = "id",
-        time_col: str = "effective_date",
-        status_col: str = "status",
-        inplace: bool = False,
+            self,
+            df: pd.DataFrame,
+            id_col: str = "id",
+            time_col: str = "effective_date",
+            status_col: str = "status",
+            inplace: bool = False,
     ) -> Optional[pd.DataFrame]:
-        deleted_ids = list(map(str, list(set(self._obj[id_col].tolist()) - set(df[id_col].tolist()))))
-
-        check_columns = list(set(self._obj.columns) - {time_col, status_col})
-
         self._obj = self._obj.astype(str)
         df = df.astype(str)
+
+        deleted_ids = list(set(self._obj[id_col].tolist()) - set(df[id_col].tolist()))
+
+        check_columns = list(set(self._obj.columns) - {time_col, status_col})
 
         df = (
             pd.concat([self._obj, df])

@@ -4,4 +4,6 @@
 cache
 tmp
 config.local
-*.csv
+.DS_Store
+.env
+*__pycache__*
